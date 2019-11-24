@@ -1,0 +1,19 @@
+{
+  "name": "euler1",
+  "version": "1.0.0",
+  "description": "Project Euler Problem 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddigeronimo/Project-Euler.git"
+  },
+  "author": "Dylan DiGeronimo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ddigeronimo/Project-Euler/issues"
+  },
+  "homepage": "https://github.com/ddigeronimo/Project-Euler#readme"
+}
