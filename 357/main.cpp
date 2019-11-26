@@ -14,22 +14,6 @@
 
 using namespace std;
 
-// Return a vector containing all divisors of a given number n
-vector<int> getDivisors(int n) {
-    vector<int> divisors;
-    // Check all numbers from 0 to half of x
-    // It's pointless to check past the halfway point, as no number is divisible by any number that is greater than 50% of itself
-    for (int i = 1; i <= n / 2; i++) {
-        // If the number is a divisor, we add it
-        if (n % i == 0) {
-            divisors.push_back(i);
-        }
-    }
-    // Finally, we have to add the number itself
-    divisors.push_back(n);
-    return divisors;
-}
-
 // Algorithm to determine primality of a number, based off method I used in https://github.com/ddigeronimo/CS546/blob/master/lab_09/public/js/prime.js 
 // Source: https://stackoverflow.com/questions/1801391/what-is-the-best-algorithm-for-checking-if-a-number-is-prime
 bool isPrime(int n) {
@@ -52,12 +36,14 @@ bool isPrime(int n) {
 
 // Given a number n, do all n's divisors d follow the property (d + n / d is prime)?
 bool areDivisorsValid(int n) {
-    // First, get n's divisors
-    vector<int> divisors = getDivisors(n);
-    // Now check if all divisors fit the given pattern
-    for (size_t i = 0; i < divisors.size(); i++) {
-        if (!isPrime(divisors[i] + n / divisors[i])) {
-            return false;
+    // First, loop through every number i up to half of n to check if it is a divisor
+    // It's pointless to check past the halfway point, as no number is divisible by any number that is greater than 50% of itself
+    for (int i = 1; i <= n / 2; i++) {
+        // If i is a divisor, we must check its validity
+        if (n % i == 0) {
+            if (!isPrime(i + n / i)) {
+                return false;
+            }
         }
     }
     return true;
