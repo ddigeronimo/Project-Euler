@@ -39,33 +39,22 @@ def is_bouncy(x):
     else:
         return True
 
-# Determine the percentage of bouncy numbers below a limit
-def bouncy_percentage(limit):
-    if limit == 0:
-        return 0
-    bouncy = 0
-    total = 0
-    for i in range(0, limit):
-        if is_bouncy(i):
-            bouncy += 1
-        total += 1
-    return bouncy / total
-
 def main():
     start_time = time.time()
-    num = 100000000
+    num = 0
     ninety_nine_found = False
+    amount_bouncy = 0
+    # Check upwards through numbers, keeping a running total of bouncy numbers and checking the percentage with each new number
     while (ninety_nine_found == False):
+        num += 1
         print(str(num))
-        if bouncy_percentage(num) == 99:
-            ninety_nine_found = True
-            # Check if previous number is the answer
-            if bouncy_percentage(num - 1) == 99:
-                num -= 1
-        else:
-            num += 2
+        # Instead of calling a seperate function, let's do the bounciness and percentage checks here
+        if is_bouncy(num):
+            amount_bouncy += 1
+            if amount_bouncy / num == .99:
+                ninety_nine_found = True
     end_time = time.time()
-    print("99% Bouncy found at ", str(num))
+    print("99% Bouncy below ", str(num))
     print("Time elapsed: ", end_time - start_time)
 
 if __name__ == "__main__":
