@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Werror
+CXXFLAGS = -Wall -Werror -pedantic-errors -fmessage-length=0
 CXX_FILE = $(wildcard *.cpp)
 TARGET =$(patsubst %.cpp,%,$(CXX_FILE))
 
