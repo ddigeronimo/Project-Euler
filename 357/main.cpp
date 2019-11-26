@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -30,9 +31,23 @@ vector<int> getDivisors(int n) {
 }
 
 // Algorithm to determine primality of a number, based off method I used in https://github.com/ddigeronimo/CS546/blob/master/lab_09/public/js/prime.js 
+// Source: https://stackoverflow.com/questions/1801391/what-is-the-best-algorithm-for-checking-if-a-number-is-prime
 bool isPrime(int n) {
-    // TODO
-    return false;
+    if (n == 2 || n == 3) {
+        return true;
+    } else if (n % 2 == 0 || n % 3 == 0) {
+        return false;
+    }
+    int i = 5;
+    int w = 2;
+    while (i * i <= n) {
+        if (n % i == 0) {
+            return false;
+        }
+        i += w;
+        w = 6 - w;
+    }
+    return true;
 }
 
 // Given a number n, do all n's divisors d follow the property (d + n / d is prime)?
@@ -41,10 +56,11 @@ bool areDivisorsValid(int n) {
     vector<int> divisors = getDivisors(n);
     // Now check if all divisors fit the given pattern
     for (size_t i = 0; i < divisors.size(); i++) {
-        // TODO
+        if (!isPrime(divisors[i] + n / divisors[i])) {
+            return false;
+        }
     }
-    
-    return false;
+    return true;
 }
 
 int main(int argc, char *argv[]) {
@@ -52,6 +68,23 @@ int main(int argc, char *argv[]) {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    // TODO
+    // Setup system timer, based on https://stackoverflow.com/a/3220503
+    clock_t start;
+    double duration;
+    start = clock();
+
+    // Check the sutibility of all numbers through 100000000 and add them onto a sum value
+    int sumOfValidNumbers = 0;
+    for (int i = 1; i < 100000000; i++) {
+        if (areDivisorsValid(i)) {
+            printf("%d is valid\n", i);
+            sumOfValidNumbers += i;
+        }
+    }
+
+    duration = (clock() - start) / (double) CLOCKS_PER_SEC;
+    printf("Sum of all valid numbers: %d\n", sumOfValidNumbers);
+    printf("Total time: %f seconds\n", duration);
+
     return 0;
 }
