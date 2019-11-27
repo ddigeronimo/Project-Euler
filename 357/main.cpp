@@ -14,35 +14,64 @@
 
 using namespace std;
 
+// Memoize primes
+bool primeMemo[50000000] = {false}; // Primes are true, not checked/not prime are false
+bool notPrimeMemo[50000000] = {false}; // Only not prime are true, not checked/prime are false
+
 // Algorithm to determine primality of a number, based off method I used in https://github.com/ddigeronimo/CS546/blob/master/lab_09/public/js/prime.js 
-// Source: https://stackoverflow.com/questions/1801391/what-is-the-best-algorithm-for-checking-if-a-number-is-prime
+// As opposed to my source, this method uses memoization to increase efficiency as the program runs
 bool isPrime(int n) {
+    // Check memo array
+    if (primeMemo[n]) {
+        return true;
+    }
+    if (notPrimeMemo[n]) {
+        return false;
+    }
     if (n == 2 || n == 3) {
+        primeMemo[n] = true;
         return true;
     } else if (n % 2 == 0 || n % 3 == 0) {
+        notPrimeMemo[n] = true;
         return false;
     }
     int i = 5;
     int w = 2;
     while (i * i <= n) {
         if (n % i == 0) {
+            notPrimeMemo[n] = true;
             return false;
         }
         i += w;
         w = 6 - w;
     }
+    primeMemo[n] = true;
     return true;
 }
 
 // Given a number n, do all n's divisors d follow the property (d + n / d is prime)?
+// TODO: Optimize this
 bool areDivisorsValid(int n) {
     // First, loop through every number i up to half of n to check if it is a divisor
     // It's pointless to check past the halfway point, as no number is divisible by any number that is greater than 50% of itself
-    for (int i = 1; i <= n / 2; i++) {
-        // If i is a divisor, we must check its validity
-        if (n % i == 0) {
-            if (!isPrime(i + n / i)) {
-                return false;
+
+    // If n is odd, we can check only odd numbers for its divisors
+    if (n % 2 == 0) {
+        for (int i = 1; i <= n / 2; i+=2) {
+            // If i is a divisor, we must check its validity
+            if (n % i == 0) {
+                if (!isPrime(i + n / i)) {
+                    return false;
+                }
+            }
+        }
+    } else {
+        for (int i = 1; i <= n / 2; i++) {
+            // If i is a divisor, we must check its validity
+            if (n % i == 0) {
+                if (!isPrime(i + n / i)) {
+                    return false;
+                }
             }
         }
     }
@@ -59,17 +88,18 @@ int main(int argc, char *argv[]) {
     double duration;
     start = clock();
 
-    // Check the sutibility of all numbers through 100000000 and add them onto a sum value
-    int sumOfValidNumbers = 0;
-    for (int i = 1; i < 100000000; i++) {
+    // Check the sutibility of all even numbers through 100000000 and add them onto a sum value
+    // No odd numbers other than 1 are valid, so we can skip them and start the sum value at one
+    double sumOfValidNumbers = 1;
+    for (int i = 2; i < 100000000; i+=2) {
         if (areDivisorsValid(i)) {
             printf("%d is valid\n", i);
-            sumOfValidNumbers += i;
+            sumOfValidNumbers += (double) i;
         }
     }
 
     duration = (clock() - start) / (double) CLOCKS_PER_SEC;
-    printf("Sum of all valid numbers: %d\n", sumOfValidNumbers);
+    printf("Sum of all valid numbers: %f\n", sumOfValidNumbers);
     printf("Total time: %f seconds\n", duration);
 
     return 0;
